@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SMPC UI</title>
+</head>
+<body>
+    <h2>Secure Multi-Party Share Submission</h2>
+    <form id="submitForm">
+        Party ID: <input type="text" name="party_id" required><br><br>
+        Share: <input type="number" name="share" required><br><br>
+        <button type="submit">Submit Share</button>
+    </form>
+
+    <h3>Result</h3>
+    <button onclick="getResult()">Compute</button>
+    <p id="resultArea"></p>
+
+    <script>
+    document.getElementById("submitForm").onsubmit = async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const payload = {
+            party_id: formData.get("party_id"),
+            share: formData.get("share")
+        };
+        const res = await fetch("/submit", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        alert(data.message);
+    }
+
+    async function getResult() {
+        const res = await fetch("/compute");
+        const data = await res.json();
+        document.getElementById("resultArea").innerText = JSON.stringify(data);
+    }
+    </script>
+</body>
+</html>
+
